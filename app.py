@@ -1,83 +1,65 @@
 import streamlit as st
 from PyPDF2 import PdfMerger
-import io
+from io import BytesIO
 
-# 1. إعدادات الصفحة لتحسين محركات البحث (SEO) وتحديد اسم البراند الجديد
+# 1. إعدادات الصفحة الأساسية
 st.set_page_config(
-    page_title="YouToPDF - دمج ملفات PDF مجاناً وبسرعة",
+    page_title="YouToPDF - Merge PDF Online",
     page_icon="📄",
     layout="centered"
 )
 
-# 2. واجهة المستخدم الرئيسية
-st.title("📄 YouToPDF")
-st.subheader("أداتك الذكية لدمج ملفات PDF في ثوانٍ")
+# 2. إضافة خيار اللغة في الشريط الجانبي
+language = st.sidebar.selectbox("Choose Language / اختر اللغة", ["العربية", "English"])
 
-st.write("""
-مرحباً بك في **YouToPDF**، المنصة الأسهل لدمج مستنداتك الرقمية. 
-نحن نوفر لك (You) خدمة احترافية لتحويل ودمج ملفات الـ PDF الخاصة بك مجاناً تماماً.
-""")
+# إعدادات النصوص بناءً على اللغة المختارة
+if language == "العربية":
+    title = "📄 YouToPDF - دمج ملفات PDF"
+    description = "أداة مجانية وسريعة لدمج ملفات PDF في ملف واحد احترافي."
+    upload_label = "اختر ملفات PDF لدمجها"
+    button_label = "دمج الملفات الآن"
+    success_msg = "تم دمج الملفات بنجاح!"
+    download_label = "تحميل الملف المدمج"
+    error_msg = "الرجاء رفع ملفين على الأقل للدمج."
+    footer_text = "حقوق النشر © 2025 YouToPDF. جميع الحقوق محفوظة."
+else:
+    title = "📄 YouToPDF - Merge PDF Files"
+    description = "Free and fast tool to merge multiple PDF files into one professional document."
+    upload_label = "Choose PDF files to merge"
+    button_label = "Merge Files Now"
+    success_msg = "Files merged successfully!"
+    download_label = "Download Merged File"
+    error_msg = "Please upload at least two files to merge."
+    footer_text = "Copyright © 2025 YouToPDF. All rights reserved."
 
-# 3. أداة دمج الملفات
-uploaded_files = st.file_uploader("اختر ملفات PDF لدمجها", type="pdf", accept_multiple_files=True)
+# 3. عرض الواجهة
+st.markdown(f"<h1 style='text-align: center;'>{title}</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center;'>{description}</p>", unsafe_allow_html=True)
+st.divider()
 
-if uploaded_files:
-    if st.button("دمج الملفات الآن"):
+# 4. منطقة رفع الملفات
+uploaded_files = st.file_uploader(upload_label, type="pdf", accept_multiple_files=True)
+
+if st.button(button_label):
+    if uploaded_files and len(uploaded_files) >= 2:
         merger = PdfMerger()
-        try:
-            for pdf in uploaded_files:
-                merger.append(pdf)
-            
-            output = io.BytesIO()
-            merger.write(output)
-            st.success("تم دمج الملفات بنجاح!")
-            
-            st.download_button(
-                label="تحميل الملف المدمج",
-                data=output.getvalue(),
-                file_name="merged_by_YouToPDF.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.error(f"حدث خطأ أثناء الدمج: {e}")
+        for pdf in uploaded_files:
+            merger.append(pdf)
+        
+        # حفظ النتيجة في الذاكرة
+        output = BytesIO()
+        merger.write(output)
+        
+        st.success(success_msg)
+        st.download_button(
+            label=download_label,
+            data=output.getvalue(),
+            file_name="YouToPDF_Merged.pdf",
+            mime="application/pdf"
+        )
+    else:
+        st.error(error_msg)
 
-# 4. محتوى إضافي لقبول Google AdSense (ضروري جداً)
-st.markdown("---")
-st.header("حول خدمة YouToPDF")
-st.write("""
-تم تطوير **YouToPDF** ليكون الحل الأسرع للمستخدمين الذين يبحثون عن البساطة والأمان. 
-سواء كنت طالباً أو موظفاً، يمكنك الاعتماد علينا لجمع أوراقك في ملف واحد بضغطة زر.
-""")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.info("### لماذا نحن؟\n- معالجة فورية\n- مجاني 100%\n- واجهة بسيطة")
-
-with col2:
-    st.info("### الأمان والخصوصية\n- لا نخزن ملفاتك\n- المعالجة تتم في الذاكرة المؤقتة\n- حذف الملفات فور الإغلاق")
-
-# 5. الصفحات القانونية المطلوبة من أدسنس
-st.markdown("---")
-tab1, tab2, tab3 = st.tabs(["سياسة الخصوصية", "من نحن", "اتصل بنا"])
-
-with tab1:
-    st.write("""
-    **سياسة الخصوصية لـ YouToPDF:**
-    نحن في youtopdf.com نولي أهمية قصوى لخصوصيتك. 
-    - لا نقوم بجمع أي بيانات شخصية.
-    - الملفات المرفوعة يتم معالجتها لغرض الدمج فقط ولا يتم حفظها في خوادمنا.
-    - باستخدامك للموقع، فأنت توافق على معالجة ملفاتك تقنياً لإتمام الخدمة.
-    """)
-
-with tab2:
-    st.write("""
-    **من نحن:**
-    YouToPDF هو مشروع تقني يهدف إلى توفير أدوات رقمية مجانية للمستخدم العربي والعالمي. 
-    نؤمن بأن الأدوات الأساسية يجب أن تكون متاحة للجميع دون قيود.
-    """)
-
-with tab3:
-    st.write("للتواصل والاستفسارات: support@youtopdf.com")
-
-st.markdown("<p style='text-align: center; color: gray;'>© 2025 YouToPDF.com - جميع الحقوق محفوظة</p>", unsafe_allow_index=True)
+# 5. تذييل الصفحة (Footer) مهم جداً للمصداقية
+st.divider()
+st.caption(footer_text)
