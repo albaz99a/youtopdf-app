@@ -1,95 +1,166 @@
-import streamlit as st
-from PyPDF2 import PdfMerger, PdfReader, PdfWriter
-from io import BytesIO
-from PIL import Image
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
 
-# 1. إعدادات الصفحة الاحترافية
-st.set_page_config(page_title="YouToPDF", page_icon="📄", layout="wide")
+header {
+    max-width: 900px;
+    margin: 0 auto;
+}
 
-# 2. تصميم CSS المتقدم (مطابق للصورة تماماً)
-st.markdown("""
-<style>
-    /* إخفاء القوائم الافتراضية لمنع ظهور أي صفحات منبثقة */
-    [data-testid="stSidebar"] {display: none;}
-    #MainMenu, footer, header {visibility: hidden;}
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    /* تنسيق الحاوية العلوية */
-    .main-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
-    
-    /* تنسيق الأيقونات الاحترافية */
-    .icon-container { text-align: center; padding: 10px; }
-    .service-icon { width: 90px; height: 90px; margin-bottom: 10px; filter: grayscale(20%); }
-    
-    /* تكبير وتنسيق أسماء الخدمات بوضوح عالي */
-    .stButton>button { 
-        width: 100%; 
-        height: 80px !important; 
-        font-size: 22px !important; 
-        font-weight: 900 !important; 
-        border-radius: 15px !important;
-        border: 2px solid #f1f3f6 !important;
-        background-color: #ffffff !important;
-        transition: 0.3s;
-    }
-    .stButton>button:hover { 
-        border-color: #ff4b4b !important; 
-        color: #ff4b4b !important;
-        transform: translateY(-3px);
-    }
-    
-    /* تمييز كلمة PDF باللون الأحمر */
-    .pdf-brand { color: #ff4b4b; font-weight: bold; }
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #444;
+}
 
-    /* الفوتر المؤطر باللون الأحمر (متطلبات أدسنس) */
-    .adsense-footer-container {
-        background-color: #fafafa;
-        padding: 40px;
-        border: 2px solid #ff4b4b;
-        border-radius: 20px;
-        text-align: center;
-        margin-top: 60px;
-    }
-</style>
-""", unsafe_allow_html=True)
+.lang-btn {
+    border: 1px solid #ddd;
+    background: white;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-# 3. الجزء العلوي (الشعار واللغة)
-col_logo, col_lang = st.columns([8, 2])
-with col_logo:
-    st.markdown("<h1 style='color: #ff4b4b; margin: 0;'>📄 YouToPDF</h1>", unsafe_allow_html=True)
-with col_lang:
-    lang = st.radio("", ["العربية", "English"], horizontal=True, label_visibility="collapsed")
+.active-lang {
+    background: #fdeaea;
+    color: #e74c3c;
+    border-color: #fdeaea;
+}
 
-st.markdown("<hr style='margin-top: 5px; border: 0.5px solid #eee;'>", unsafe_allow_html=True)
+.sub-header {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
 
-# 4. تعريف النصوص بناءً على اللغة المختار
-if lang == "العربية":
-    labels = ["دمج PDF", "صور إلى PDF", "تقسيم PDF", "حماية PDF", "ضغط PDF"]
-    t_about = "💡 YouToPDF: منصة احترافية توفر أدوات معالجة ملفات مجانية وآمنة."
-    t_priv = "🔒 الخصوصية: لا يتم تخزين ملفاتك؛ المعالجة فورية وتتم في الذاكرة فقط."
-    t_terms = "⚖️ الشروط: الاستخدام العادل والقانوني فقط."
-    t_contact = "📧 تواصـل معنا: support@youtopdf.com"
-    btn_txt = "بدء التنفيذ"
-else:
-    labels = ["Merge PDF", "Images to PDF", "Split PDF", "Protect PDF", "Compress PDF"]
-    t_about = "💡 YouToPDF: Professional platform for free and secure PDF tools."
-    t_priv = "🔒 Privacy: No files are stored; processing is instant and in-memory."
-    t_terms = "⚖️ Terms: Fair and lawful use only."
-    t_contact = "📧 Contact Us: support@youtopdf.com"
-    btn_txt = "Run Now"
+.style-tag {
+    background: #e1ecf4;
+    color: #39739d;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
 
-# 5. الأيقونات الاحترافية (تم اختيارها لتدل على PDF)
-icons = [
-    "https://cdn-icons-png.flaticon.com/512/9464/9464136.png", # Merge
-    "https://cdn-icons-png.flaticon.com/512/3342/3342137.png", # Images
-    "https://cdn-icons-png.flaticon.com/512/9463/9463934.png", # Split
-    "https://cdn-icons-png.flaticon.com/512/2913/2913133.png", # Protect
-    "https://cdn-icons-png.flaticon.com/512/2991/2991124.png"  # Compress
-]
+.intro-text {
+    font-size: 14px;
+    color: #555;
+    margin-top: 15px;
+}
 
-# عرض شبكة الخدمات كما في صورتك
-cols = st.columns(5)
-if 'active' not in st.session_state: st.session_state.active = labels[0]
+.grid-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
 
-for i in range(5):
-    with cols[i]:
-        st.markdown(f"<div style='text-align:center;'><img src='{icons
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: center;
+    width: 140px;
+}
+
+.card h3 {
+    font-size: 14px;
+    margin: 15px 0;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    color: white;
+    font-size: 12px;
+}
+
+.red { background-color: #e74c3c; }
+.orange { background-color: #e67e22; }
+.dark-red { background-color: #c0392b; }
+
+.dots {
+    text-align: center;
+    font-size: 24px;
+    color: #ccc;
+    margin: 20px 0;
+}
+
+.active-section {
+    background: white;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.form-group, .form-group-btn {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.form-group label, .form-group-btn label {
+    width: 100px;
+    font-size: 14px;
+}
+
+.form-group input {
+    border: none;
+    background: #f1f3f4;
+    padding: 8px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.download-btn {
+    background: #f1f3f4;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.footer-container {
+    border: 2px solid #e74c3c;
+    border-radius: 20px;
+    margin: 30px auto;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.footer-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-container li {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.highlight-red {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 40px;
+}
