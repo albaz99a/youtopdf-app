@@ -6,113 +6,115 @@ from PIL import Image
 # 1. إعدادات الصفحة
 st.set_page_config(page_title="YouToPDF", page_icon="📄", layout="wide")
 
-# 2. تصميم الواجهة - تبسيط كامل لضمان استقرار الموقع
+# 2. تصميم الواجهة - إخفاء القوائم وتنسيق الأيقونات والفوتر
 st.markdown("""
 <style>
-    /* تنسيق الأيقونات لتكون واضحة وتفاعلية */
-    .icon-box { font-size: 60px !important; text-align: center; margin-bottom: 0px; }
-    /* تنسيق الفوتر (الخصوصية واتصل بنا) */
-    .footer-section {
-        background-color: #f1f3f6;
-        padding: 25px;
+    /* تكبير الأيقونات وتوسيطها */
+    .big-icon { font-size: 80px !important; text-align: center; margin-bottom: 5px; }
+    
+    /* تصميم قسم الخصوصية وأدسنس في الأسفل */
+    .adsense-footer {
+        background-color: #f9f9f9;
+        padding: 30px;
         border-top: 5px solid #ff4b4b;
-        margin-top: 50px;
+        margin-top: 60px;
         border-radius: 15px;
         text-align: center;
     }
-    /* تحسين الأزرار */
-    .stButton>button { width: 100%; border-radius: 8px; font-weight: bold; }
+    
+    /* إخفاء القوائم الجانبية ومنيو ستريمليت لضمان مظهر احترافي */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# 3. اللغات
+# 3. نظام اللغات
 lang = st.sidebar.radio("Language / اللغة", ["العربية", "English"])
 
 if lang == "العربية":
     services = ["دمج PDF", "صور إلى PDF", "تقسيم PDF", "حماية PDF", "ضغط PDF"]
-    f_about = "💡 منصة YouToPDF: أدوات احترافية مجانية بالكامل."
-    f_privacy = "🔒 الخصوصية: معالجة فورية للملفات دون تخزين."
+    f_about = "💡 منصة YouToPDF: أدوات احترافية مجانية بالكامل لمعالجة ملفاتك."
+    f_privacy = "🔒 الخصوصية: معالجة الملفات تتم في الذاكرة المؤقتة وتُحذف فوراً."
     f_terms = "⚖️ الشروط: الاستخدام العادل والقانوني فقط."
     f_contact = "📧 تواصـل معنا: support@youtopdf.com"
 else:
     services = ["Merge PDF", "Images to PDF", "Split PDF", "Protect PDF", "Compress PDF"]
     f_about = "💡 YouToPDF: Professional PDF tools, 100% free."
-    f_privacy = "🔒 Privacy: Instant processing with zero storage."
+    f_privacy = "🔒 Privacy: Files are processed in-memory and deleted instantly."
     f_terms = "⚖️ Terms: Fair and lawful use only."
     f_contact = "📧 Contact Us: support@youtopdf.com"
 
-st.title("📄 YouToPDF")
+st.markdown("<h1 style='text-align: center;'>📄 YouToPDF</h1>", unsafe_allow_html=True)
 st.write("---")
 
-# 4. عرض الأيقونات كأزرار مباشرة (إلغاء صندوق الاختيار المنسدل)
+# 4. تفعيل الأيقونات الخمس كأزرار (تم إلغاء القائمة المنسدلة تماماً)
 icons = ["🔗", "🖼️", "✂️", "🔒", "📉"]
 cols = st.columns(5)
 
-# إدارة حالة الأداة المختارة
+# إدارة حالة الأداة المختارة عبر session_state
 if 'active_tool' not in st.session_state:
     st.session_state.active_tool = services[0]
 
 for i in range(5):
     with cols[i]:
-        st.markdown(f"<div class='icon-box'>{icons[i]}</div>", unsafe_allow_html=True)
-        if st.button(services[i], key=f"btn_svc_{i}"):
+        st.markdown(f"<div class='big-icon'>{icons[i]}</div>", unsafe_allow_html=True)
+        # جعل اسم الخدمة هو الزر الفعلي للتحكم
+        if st.button(services[i], key=f"btn_service_{i}"):
             st.session_state.active_tool = services[i]
 
-st.divider()
+st.write("---")
 
-# 5. منطقة العمل
-current = st.session_state.active_tool
-st.subheader(f"🛠️ {current}")
+# 5. منطقة العمل الديناميكية
+tool = st.session_state.active_tool
+st.subheader(f"🛠️ {tool}")
 
-out = BytesIO()
-is_done = False
+output = BytesIO()
+is_ready = False
 
-# منطق الأدوات (مبسط جداً لمنع أي Syntax Error)
-if current == services[0]: # Merge
-    files = st.file_uploader("PDFs", type="pdf", accept_multiple_files=True, key="up1")
-    if st.button("ابدأ الآن", key="go1") and files:
-        m = PdfMerger()
-        for f in files: m.append(f)
-        m.write(out); is_done = True
+# تنفيذ العمليات البرمجية لكل أداة
+if tool == services[0]: # دمج
+    up = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True, key="m_up")
+    if st.button("بدأ التنفيذ", key="m_run") and up:
+        merger = PdfMerger()
+        for f in up: merger.append(f)
+        merger.write(output); is_ready = True
 
-elif current == services[1]: # Images
-    files = st.file_uploader("Images", type=["jpg","png","jpeg"], accept_multiple_files=True, key="up2")
-    if st.button("ابدأ الآن", key="go2") and files:
-        imgs = [Image.open(f).convert("RGB") for f in files]
-        imgs[0].save(out, format="PDF", save_all=True, append_images=imgs[1:]); is_done = True
+elif tool == services[1]: # صور
+    up = st.file_uploader("Upload Images", type=["jpg","png","jpeg"], accept_multiple_files=True, key="i_up")
+    if st.button("بدأ التنفيذ", key="i_run") and up:
+        imgs = [Image.open(f).convert("RGB") for f in up]
+        imgs[0].save(output, format="PDF", save_all=True, append_images=imgs[1:]); is_ready = True
 
-elif current == services[2]: # Split
-    file = st.file_uploader("PDF", type="pdf", key="up3")
+elif tool == services[2]: # تقسيم
+    up = st.file_uploader("Upload PDF", type="pdf", key="s_up")
     p = st.text_input("Range (1-2)", "1-2")
-    if st.button("ابدأ الآن", key="go3") and file:
-        r, w = PdfReader(file), PdfWriter()
-        s, e = map(int, p.split("-"))
-        for i in range(s-1, min(e, len(r.pages))): w.add_page(r.pages[i])
-        w.write(out); is_done = True
+    if st.button("بدأ التنفيذ", key="s_run") and up:
+        r, w = PdfReader(up), PdfWriter()
+        start, end = map(int, p.split("-"))
+        for i in range(start-1, min(end, len(r.pages))): w.add_page(r.pages[i])
+        w.write(output); is_ready = True
 
-elif current == services[3]: # Protect
-    file = st.file_uploader("PDF", type="pdf", key="up4")
+elif tool == services[3]: # حماية
+    up = st.file_uploader("Upload PDF", type="pdf", key="p_up")
     pw = st.text_input("Password", type="password")
-    if st.button("ابدأ الآن", key="go4") and file and pw:
-        r, w = PdfReader(file), PdfWriter()
+    if st.button("بدأ التنفيذ", key="p_run") and up and pw:
+        r, w = PdfReader(up), PdfWriter()
         for pge in r.pages: w.add_page(pge)
-        w.encrypt(pw); w.write(out); is_done = True
+        w.encrypt(pw); w.write(output); is_ready = True
 
-elif current == services[4]: # Compress
-    file = st.file_uploader("PDF", type="pdf", key="up5")
-    if st.button("ابدأ الآن", key="go5") and file:
-        r, w = PdfReader(file), PdfWriter()
+elif tool == services[4]: # ضغط
+    up = st.file_uploader("Upload PDF", type="pdf", key="c_up")
+    if st.button("بدأ التنفيذ", key="c_run") and up:
+        r, w = PdfReader(up), PdfWriter()
         for pge in r.pages: pge.compress_content_streams(); w.add_page(pge)
-        w.write(out); is_done = True
+        w.write(output); is_ready = True
 
-if is_done:
-    st.success("تم التجهيز!")
-    st.download_button("📥 تحميل الملف", out.getvalue(), "YouToPDF_Result.pdf")
+if is_ready:
+    st.success("Success!")
+    st.download_button("📥 تحميل الملف الآن", output.getvalue(), "YouToPDF_Result.pdf")
 
-# 6. قسم الخصوصية واتصل بنا (فوتر آمن برمجياً)
-st.markdown("<div class='footer-section'>", unsafe_allow_html=True)
+# 6. قسم شروط أدسنس والخصوصية (تم إصلاح SyntaxError نهائياً)
+st.markdown("<div class='adsense-footer'>", unsafe_allow_html=True)
 st.markdown(f"<h4>{f_about}</h4>", unsafe_allow_html=True)
-st.markdown(f"<p>{f_privacy} | {f_terms}</p>", unsafe_allow_html=True)
-st.markdown(f"<b>{f_contact}</b>", unsafe_allow_html=True)
-st.markdown("<p style='color:gray; font-size:12px; margin-top:10px;'>© 2026 YouToPDF - Fast & Secure</p>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
+st.markdown(f"<p
