@@ -26,7 +26,7 @@ if language == "العربية":
     t_privacy_h = "🔒 الخصوصية والأمان"
     t_privacy_b = "جميع الملفات تعالج في الذاكرة المؤقتة وتُحذف فوراً. نحن لا نحتفظ بأي بيانات نهائياً لضمان خصوصيتك الكاملة."
     t_terms_h = "⚖️ شروط الاستخدام"
-    t_terms_b = "باستخدامك للموقع، توافق على معالجة ملفاتك قانونياً. الخدمة مقدمة مجاناً 'كما هي' وبدون ضمانات."
+    t_terms_b = "باستخدامك للموقع، توافق على معالجة ملفاتك قانونياً. الخدمة مقدمة مجاناً كما هي وبدون ضمانات."
     t_contact_h = "📧 اتصل بنا"
     t_contact_b = "لديك استفسار أو اقتراح؟ يسعدنا تواصلك معنا عبر البريد الإلكتروني التالي:"
 else:
@@ -45,4 +45,53 @@ else:
     t_terms_h = "⚖️ Terms of Use"
     t_terms_b = "By using this tool, you agree to lawful use. Service is provided 'as is' without warranties."
     t_contact_h = "📧 Contact Us"
-    t_contact_b = "Have a question or suggestion
+    t_contact_b = "Have a question or suggestion? Feel free to reach out to us via email:"
+
+# --- الواجهة الرئيسية ---
+st.markdown(f"<h1 style='text-align: center;'>{t_title}</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center;'>{t_desc}</p>", unsafe_allow_html=True)
+st.write("---")
+
+service = st.radio(t_service_label, [t_merge_option, t_img_option], horizontal=True)
+
+if service == t_merge_option:
+    uploaded_files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
+    if st.button(t_btn_merge):
+        if uploaded_files and len(uploaded_files) >= 2:
+            merger = PdfMerger()
+            for pdf in uploaded_files:
+                merger.append(pdf)
+            output = BytesIO()
+            merger.write(output)
+            st.success("Success!" if language == "English" else "تم الدمج!")
+            st.download_button("Download Result", output.getvalue(), "merged.pdf")
+        else:
+            st.warning("Please upload 2+ files" if language == "English" else "يرجى رفع ملفين على الأقل")
+
+elif service == t_img_option:
+    uploaded_images = st.file_uploader("Upload Images", type=["jpg", "png", "jpeg"], accept_multiple_files=True)
+    if st.button(t_btn_img):
+        if uploaded_images:
+            imgs = [Image.open(i).convert("RGB") for i in uploaded_images]
+            output = BytesIO()
+            imgs[0].save(output, format="PDF", save_all=True, append_images=imgs[1:])
+            st.success("Converted!" if language == "English" else "تم التحويل!")
+            st.download_button("Download PDF", output.getvalue(), "images.pdf")
+
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+st.write("---")
+st.markdown(f"### {t_about_h}")
+st.write(t_about_b)
+
+col1, col2 = st.columns(2)
+with col1:
+    st.markdown(f"#### {t_privacy_h}")
+    st.info(t_privacy_b)
+with col2:
+    st.markdown(f"#### {t_terms_h}")
+    st.info(t_terms_b)
+
+st.write("---")
+st.markdown(f"<h4 style='text-align: center;'>{t_contact_h}</h4>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center;'>{t_contact_b}<br><b>support@youtopdf.com</b></p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray; font-size: 0.8em;'>© 2026 YouToPDF - All Rights Reserved</p>", unsafe_allow_html=True)
