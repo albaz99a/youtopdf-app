@@ -4,87 +4,75 @@ from io import BytesIO
 from PIL import Image
 
 # 1. إعدادات الصفحة
-st.set_page_config(page_title="YouToPDF - منصة أدوات PDF الشاملة", page_icon="📄", layout="wide")
+st.set_page_config(page_title="YouToPDF - أدوات PDF الشاملة", page_icon="📄", layout="wide")
 
 # 2. اختيار اللغة
 lang_col1, lang_col2 = st.columns([6, 1])
 with lang_col2:
     language = st.selectbox("Language/اللغة", ["العربية", "English"])
 
-# 3. إعدادات التصميم المتقدمة (CSS) لجعل الأيقونات والخدمات كبيرة
+# 3. إعدادات التصميم (CSS) - أيقونات كبيرة وثبات الفوتر
 if language == "العربية":
     st.markdown("""
         <style>
         .main {text-align: right; direction: rtl;}
-        .stButton > button {width: 100%; height: 60px; font-size: 20px; background-color: #ff4b4b; color: white; border-radius: 12px;}
-        .service-card { text-align: center; padding: 20px; border: 2px solid #f0f2f6; border-radius: 15px; margin-bottom: 20px; background-color: #f8f9fa;}
-        .icon { font-size: 50px; margin-bottom: 10px; }
+        .service-box { text-align: center; padding: 15px; border: 2px solid #ff4b4b; border-radius: 15px; background-color: #fff5f5; margin-bottom: 10px;}
+        .icon-size { font-size: 60px; }
+        .stButton > button {width: 100%; border-radius: 10px; font-weight: bold;}
         </style>
     """, unsafe_allow_html=True)
-    t_title = "📄 YouToPDF - منصة أدوات PDF المتكاملة"
-    t_desc = "اختر الأداة التي تحتاجها، جميع الأدوات مجانية وآمنة تماماً."
-    t_services = [
-        {"id": "merge", "name": "دمج PDF", "icon": "🔗"},
-        {"id": "img2pdf", "name": "صور إلى PDF", "icon": "🖼️"},
-        {"id": "split", "name": "تقسيم PDF", "icon": "✂️"},
-        {"id": "protect", "name": "حماية PDF", "icon": "🔒"},
-        {"id": "compress", "name": "ضغط PDF", "icon": "📉"}
-    ]
-    t_about_h = "💡 عن الموقع"
-    t_about_b = "YouToPDF منصة تهدف لتسهيل التعامل مع المستندات الرقمية دون تخزين أي بيانات."
-    t_privacy_h = "🔒 الخصوصية والأمان"
-    t_privacy_b = "جميع الملفات تعالج في الذاكرة المؤقتة وتُحذف فوراً."
-    t_contact_h = "📧 اتصل بنا"
+    t_title = "📄 YouToPDF - منصة أدوات PDF"
+    t_desc = "جميع الأدوات تظهر أدناه، اختر ما تحتاجه:"
+    labels = ["دمج PDF", "صور إلى PDF", "تقسيم PDF", "حماية PDF", "ضغط PDF"]
+    t_about_h, t_about_b = "💡 عن الموقع", "منصة YouToPDF توفر أدوات مجانية تماماً لمعالجة ملفاتك بسرعة وسهولة."
+    t_privacy_h, t_privacy_b = "🔒 الخصوصية والأمان", "ملفاتك آمنة؛ نقوم بمعالجتها في الذاكرة المؤقتة ونحذفها فوراً بعد التحميل."
+    t_terms_h, t_terms_b = "⚖️ شروط الاستخدام", "باستخدامك للموقع، أنت توافق على سياسة الاستخدام العادل والمعالجة القانونية للملفات."
+    t_contact = "📧 اتصل بنا: support@youtopdf.com"
 else:
     st.markdown("""
         <style>
         .main {text-align: left; direction: ltr;}
-        .stButton > button {width: 100%; height: 60px; font-size: 20px; border-radius: 12px;}
-        .service-card { text-align: center; padding: 20px; border: 2px solid #f0f2f6; border-radius: 15px; margin-bottom: 20px; background-color: #f8f9fa;}
-        .icon { font-size: 50px; margin-bottom: 10px; }
+        .service-box { text-align: center; padding: 15px; border: 2px solid #007bff; border-radius: 15px; background-color: #f0f7ff; margin-bottom: 10px;}
+        .icon-size { font-size: 60px; }
+        .stButton > button {width: 100%; border-radius: 10px; font-weight: bold;}
         </style>
     """, unsafe_allow_html=True)
-    t_title = "📄 YouToPDF - All-in-One PDF Platform"
-    t_desc = "Select the tool you need. All tools are free and 100% secure."
-    t_services = [
-        {"id": "merge", "name": "Merge PDF", "icon": "🔗"},
-        {"id": "img2pdf", "name": "Images to PDF", "icon": "🖼️"},
-        {"id": "split", "name": "Split PDF", "icon": "✂️"},
-        {"id": "protect", "name": "Protect PDF", "icon": "🔒"},
-        {"id": "compress", "name": "Compress PDF", "icon": "📉"}
-    ]
-    t_about_h = "💡 About Us"
-    t_about_b = "YouToPDF simplifies document management with total privacy and efficiency."
-    t_privacy_h = "🔒 Privacy & Security"
-    t_privacy_b = "Files are processed in-memory and deleted instantly."
-    t_contact_h = "📧 Contact Us"
+    t_title = "📄 YouToPDF - Professional PDF Tools"
+    t_desc = "All tools are available below, select one to start:"
+    labels = ["Merge PDF", "Images to PDF", "Split PDF", "Protect PDF", "Compress PDF"]
+    t_about_h, t_about_b = "💡 About Us", "YouToPDF offers free, high-quality tools for document management."
+    t_privacy_h, t_privacy_b = "🔒 Privacy & Security", "Your privacy is our priority. Files are processed in-memory and deleted instantly."
+    t_terms_h, t_terms_b = "⚖️ Terms of Use", "By using this site, you agree to our terms of service and lawful file processing."
+    t_contact = "📧 Contact Us: support@youtopdf.com"
 
 st.markdown(f"<h1 style='text-align: center;'>{t_title}</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center;'>{t_desc}</p>", unsafe_allow_html=True)
 st.write("---")
 
-# 4. عرض الخدمات كأيقونات كبيرة (Grid System)
-cols = st.columns(len(t_services))
-selected_service = st.session_state.get("selected", "merge")
-
-for i, s in enumerate(t_services):
-    with cols[i]:
-        st.markdown(f"<div class='service-card'><div class='icon'>{s['icon']}</div><b>{s['name']}</b></div>", unsafe_allow_html=True)
-        if st.button(f"Go / ابدأ", key=s['id']):
-            st.session_state.selected = s['id']
-            st.rerun()
-
-st.write("---")
-
-# 5. منطق العمل للأداة المختارة
-current = st.session_state.get("selected", "merge")
+# 4. عرض الخدمات الـ 5 بأيقونات كبيرة في صف واحد
+icons = ["🔗", "🖼️", "✂️", "🔒", "📉"]
+cols = st.columns(5)
 output = BytesIO()
 ready = False
 
-if current == "merge":
-    st.subheader("🔗 " + t_services[0]['name'])
-    f = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
-    if st.button("Merge & Download") and f:
+for i in range(5):
+    with cols[i]:
+        st.markdown(f"<div class='service-box'><div class='icon-size'>{icons[i]}</div><b>{labels[i]}</b></div>", unsafe_allow_html=True)
+        if st.button(f"فتح / Open", key=f"btn_{i}"):
+            st.session_state.active_tool = i
+
+# تحديد الأداة النشطة (الافتراضي دمج)
+active = st.session_state.get("active_tool", 0)
+st.markdown(f"### 🛠️ {labels[active]}")
+
+# 5. منطق العمل للأدوات
+if active == 0: # دمج
+    f = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True, key="u0")
+    if st.button("Start Process") and f:
         merger = PdfMerger()
         for x in f: merger.append(x)
         merger.write(output); ready = True
+elif active == 1: # صور
+    f = st.file_uploader("Upload Images", type=["jpg","png","jpeg"], accept_multiple_files=True, key="u1")
+    if st.button("Start Process") and f:
+        imgs = [Image.open(x).convert("RGB") for x in
