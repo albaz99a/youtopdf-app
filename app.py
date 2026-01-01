@@ -1,78 +1,89 @@
 import streamlit as st
 from PyPDF2 import PdfMerger
 from io import BytesIO
+from PIL import Image # مكتبة معالجة الصور
 
 # 1. إعدادات الصفحة
-st.set_page_config(page_title="YouToPDF - Merge PDF", page_icon="📄", layout="centered")
+st.set_page_config(page_title="YouToPDF - Multi Tools", page_icon="📄", layout="centered")
 
-# 2. خيار اللغة في الشريط الجانبي
-language = st.sidebar.radio("Choose Language / اختر اللغة", ["العربية", "English"])
+# 2. الخيارات في الشريط الجانبي
+language = st.sidebar.radio("Language / اللغة", ["العربية", "English"])
 
-# 3. النصوص الاحترافية لسياسة الخصوصية والشروط
+# إضافة قائمة الخدمات
+if language == "العربية":
+    service = st.sidebar.selectbox("اختر الخدمة", ["دمج ملفات PDF", "تحويل صور إلى PDF"])
+else:
+    service = st.sidebar.selectbox("Select Service", ["Merge PDF", "Images to PDF"])
+
+# 3. إعدادات التصميم (CSS)
 if language == "العربية":
     st.markdown("<style>.main {text-align: right; direction: rtl;} div.stButton > button {width: 100%; background-color: #ff4b4b; color: white;}</style>", unsafe_allow_html=True)
-    
-    t_title = "📄 YouToPDF - دمج ملفات PDF"
-    t_desc = "الأداة الأسرع والأكثر أماناً لدمج ملفات PDF مجاناً."
-    t_btn = "دمج وتحميل الملف الآن"
-    
-    t_about_h = "💡 عن YouToPDF"
-    t_about_b = "YouToPDF هي أداة ويب بسيطة تهدف إلى مساعدة المستخدمين على إدارة مستنداتهم الرقمية دون تعقيد. نحن نركز على توفير تجربة مستخدم سريعة مع حماية كاملة للبيانات."
-    
+    t_title = "📄 YouToPDF - أدوات PDF متعددة"
+    t_btn_merge = "دمج وتحميل الملف الآن"
+    t_btn_img = "تحويل الصور إلى PDF"
     t_privacy_h = "🔒 سياسة الخصوصية"
-    t_privacy_b = "في YouToPDF، نضع خصوصية المستخدم على رأس أولوياتنا. نحن نلتزم بسياسة 'عدم الاحتفاظ بالبيانات'؛ حيث يتم دمج ملفات PDF المرفوعة ومعالجتها لحظياً داخل ذاكرة النظام المؤقتة (RAM). بمجرد إغلاق المتصفح، يتم مسح كافة البيانات نهائياً. نحن لا نطلع على محتوى ملفاتك، ولا نشارك بياناتك مع أي أطراف ثالثة."
-    
-    t_terms_h = "⚖️ شروط الخدمة"
-    t_terms_b = "الأداة مقدمة مجاناً للاستخدام الشخصي والتجاري المشروعة فقط. يمنع منعاً باتاً استخدام الأداة لمعالجة ملفات تنتهك حقوق الملكية الفكرية. لا يتحمل الموقع أي مسؤولية عن فقدان البيانات الناتج عن أخطاء تقنية، واستخدام الأداة يتم على مسؤوليتك الشخصية."
-    
-    t_contact = "📧 اتصل بنا: support@youtopdf.com" # يمكنك تغيير البريد لإيميلك الحقيقي
+    t_privacy_b = "نحن لا نخزن ملفاتك أو صورك. المعالجة تتم في الذاكرة وتُحذف فوراً."
+    t_about_h = "💡 عن الموقع"
+    t_about_b = "منصة YouToPDF توفر أدوات احترافية وسريعة لإدارة ملفاتك مجاناً."
+    t_contact = "📧 اتصل بنا: support@youtopdf.com"
 else:
     st.markdown("<style>.main {text-align: left; direction: ltr;} div.stButton > button {width: 100%;}</style>", unsafe_allow_html=True)
-    
-    t_title = "📄 YouToPDF - PDF Merger"
-    t_desc = "The fastest and most secure tool to merge PDF files for free."
-    t_btn = "Merge and Download Now"
-    
-    t_about_h = "💡 About YouToPDF"
-    t_about_b = "YouToPDF is a simple web tool built to help users manage digital documents without complexity. We focus on speed and total data protection."
-    
+    t_title = "📄 YouToPDF - Multi PDF Tools"
+    t_btn_merge = "Merge & Download Now"
+    t_btn_img = "Convert Images to PDF"
     t_privacy_h = "🔒 Privacy Policy"
-    t_privacy_b = "At YouToPDF, user privacy is our top priority. We adhere to a strict 'No-Data Retention' policy. All uploaded PDF files are processed in real-time within the system memory (RAM). Once the session ends, all data is permanently wiped. We do not access your file content nor share any data with third parties."
-    
-    t_terms_h = "⚖️ Terms of Service"
-    t_terms_b = "This tool is provided free of charge for lawful personal and commercial use only. Use of this tool for content that violates intellectual property rights is prohibited. YouToPDF is not liable for any data loss due to technical errors."
-    
+    t_privacy_b = "We don't store your files or images. Processing is done in-memory and deleted immediately."
+    t_about_h = "💡 About Us"
+    t_about_b = "YouToPDF provides professional and fast tools to manage your files for free."
     t_contact = "📧 Contact Us: support@youtopdf.com"
 
-# --- عرض المحتوى ---
 st.markdown(f"<h1 style='text-align: center;'>{t_title}</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center;'>{t_desc}</p>", unsafe_allow_html=True)
-
-uploaded_files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True, label_visibility="collapsed")
-
-if st.button(t_btn):
-    if uploaded_files and len(uploaded_files) >= 2:
-        merger = PdfMerger()
-        for pdf in uploaded_files:
-            merger.append(pdf)
-        output = BytesIO()
-        merger.write(output)
-        st.success("Success!" if language == "English" else "تم الدمج!")
-        st.download_button("Download", output.getvalue(), "merged.pdf", "application/pdf")
-
 st.write("---")
 
-# أقسام أدسنس القانونية
-st.markdown(f"### {t_about_h}")
-st.write(t_about_b)
+# --- [الخدمة الأولى: دمج PDF] ---
+if "دمج" in service or "Merge" in service:
+    st.subheader(service)
+    uploaded_files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True, key="pdf_up")
+    
+    if st.button(t_btn_merge):
+        if uploaded_files and len(uploaded_files) >= 2:
+            merger = PdfMerger()
+            for pdf in uploaded_files:
+                merger.append(pdf)
+            output = BytesIO()
+            merger.write(output)
+            st.success("Success!" if language == "English" else "تم الدمج!")
+            st.download_button("Download PDF", output.getvalue(), "merged.pdf", "application/pdf")
+        else:
+            st.warning("Please upload 2+ files" if language == "English" else "يرجى رفع ملفين على الأقل")
 
+# --- [الخدمة الثانية: صور إلى PDF] ---
+elif "صور" in service or "Images" in service:
+    st.subheader(service)
+    uploaded_images = st.file_uploader("Upload Images", type=["jpg", "jpeg", "png"], accept_multiple_files=True, key="img_up")
+    
+    if st.button(t_btn_img):
+        if uploaded_images:
+            image_list = []
+            for img in uploaded_images:
+                image = Image.open(img).convert("RGB")
+                image_list.append(image)
+            
+            output = BytesIO()
+            image_list[0].save(output, format="PDF", save_all=True, append_images=image_list[1:])
+            st.success("Success!" if language == "English" else "تم التحويل!")
+            st.download_button("Download PDF", output.getvalue(), "images_to_pdf.pdf", "application/pdf")
+        else:
+            st.warning("Please upload images" if language == "English" else "يرجى رفع صور أولاً")
+
+# --- [تذييل الصفحة الثابت لأدسنس] ---
+st.write("---")
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown(f"#### {t_privacy_h}")
-    st.info(t_privacy_b)
+    st.markdown(f"#### {t_about_h}")
+    st.caption(t_about_b)
 with col2:
-    st.markdown(f"#### {t_terms_h}")
-    st.info(t_terms_b)
+    st.markdown(f"#### {t_privacy_h}")
+    st.caption(t_privacy_b)
 
-st.write("---")
-st.markdown(f"<p style='text-align: center;'>{t_contact}</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; margin-top: 30px;'>{t_contact}</p>", unsafe_allow_html=True)
