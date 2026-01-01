@@ -3,30 +3,6 @@ body {
     background-color: #f7f9fc;
     color: #333;
     margin: 0;
-    padding: 20px;
-}
-
-header {
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #444;
-}
-
-.lang-btn {
-    border: 1px solid #ddd;
-    background: white;
-    padding: 5px 15px;
     border-radius: 4px;
     cursor: pointer;
 }
@@ -164,3 +140,4 @@ footer {
     color: #888;
     margin-top: 40px;
 }
+
