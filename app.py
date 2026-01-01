@@ -5,53 +5,52 @@ from io import BytesIO
 # 1. إعدادات الصفحة
 st.set_page_config(page_title="YouToPDF - Merge PDF", page_icon="📄", layout="centered")
 
-# 2. خيار اللغة - تم نقله إلى الصفحة الرئيسية بدلاً من الشريط الجانبي
-# استخدام columns لوضع زر اللغة في جهة محددة أو في المنتصف
-lang_col1, lang_col2 = st.columns([3, 1])
-with lang_col2:
-    language = st.selectbox("Language / اللغة", ["العربية", "English"])
+# 2. خيار اللغة (يبقى في الشريط الجانبي بناءً على طلبك)
+language = st.sidebar.radio("Choose Language / اختر اللغة", ["العربية", "English"])
 
-# 3. إعدادات التصميم والتنسيق (CSS)
+# 3. إعدادات التصميم (CSS) لضبط النصوص في الصفحة الرئيسية
 if language == "العربية":
     st.markdown("""
         <style>
         .main { text-align: right; direction: rtl; }
-        div.stButton > button { width: 100%; border-radius: 8px; background-color: #ff4b4b; color: white; height: 3em; font-size: 1.2em; }
-        .footer-note { text-align: center; color: #666; font-size: 0.8em; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
+        div.stButton > button { width: 100%; border-radius: 8px; background-color: #ff4b4b; color: white; height: 3em; }
+        .legal-section { background-color: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 30px; border: 1px solid #eee; }
+        .footer-note { text-align: center; color: #888; font-size: 0.8em; margin-top: 30px; }
         </style>
     """, unsafe_allow_html=True)
     
     t_title = "📄 YouToPDF - دمج ملفات PDF"
-    t_desc = "أداة مجانية واحترافية لدمج ملفات PDF في ملف واحد بسرعة وأمان."
-    t_upload = "قم برفع ملفات PDF هنا"
+    t_desc = "الأداة الأسرع والأكثر أماناً لدمج ملفات PDF في ملف واحد مجاناً."
+    t_upload = "اختر الملفات التي تريد دمجها"
     t_btn = "دمج وتحميل الملف الآن"
-    t_privacy_h = "🔒 سياسة الخصوصية والأمان"
-    t_privacy_b = "خصوصيتك هي أولويتنا. جميع الملفات يتم معالجتها داخل ذاكرة النظام المؤقتة ولا يتم تخزينها نهائياً."
-    t_terms_h = "⚖️ شروط الخدمة"
-    t_terms_b = "يوافق المستخدم على استخدام الأداة للأغراض القانونية فقط. الخدمة مقدمة 'كما هي' بدون ضمانات."
-    t_about_h = "💡 عن الأداة"
-    t_about_b = "أداة YouToPDF مصممة لتكون أسرع وسيلة لدمج المستندات مع الحفاظ على خصوصية المستخدم الكاملة."
+    t_about_h = "💡 عن YouToPDF"
+    t_about_b = "YouToPDF هي أداة ويب بسيطة تهدف إلى مساعدة المستخدمين على إدارة مستنداتهم الرقمية دون تعقيد. نحن نركز على توفير تجربة مستخدم سريعة مع حماية كاملة للبيانات."
+    t_privacy_h = "🔒 سياسة الخصوصية"
+    t_privacy_b = "نحن نطبق معايير أمان صارمة؛ جميع عمليات معالجة الملفات تتم بشكل مؤقت في الذاكرة (RAM) وتُمسح فوراً بعد التحميل. لا يتم حفظ أي نسخة من ملفاتك على خوادمنا."
+    t_terms_h = "⚖️ شروط الاستخدام"
+    t_terms_b = "باستخدامك لهذه الخدمة، فإنك توافق على استخدامها للأغراض الشخصية والقانونية فقط. الخدمة مقدمة مجاناً ولا نتحمل مسؤولية أي محتوى مرفوع من قبل المستخدم."
 else:
     st.markdown("""
         <style>
         .main { text-align: left; direction: ltr; }
-        div.stButton > button { width: 100%; border-radius: 8px; height: 3em; font-size: 1.2em; }
-        .footer-note { text-align: center; color: #666; font-size: 0.8em; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
+        div.stButton > button { width: 100%; border-radius: 8px; height: 3em; }
+        .legal-section { background-color: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 30px; border: 1px solid #eee; }
+        .footer-note { text-align: center; color: #888; font-size: 0.8em; margin-top: 30px; }
         </style>
     """, unsafe_allow_html=True)
     
     t_title = "📄 YouToPDF - PDF Merger"
-    t_desc = "A free, professional tool to merge PDF files quickly and securely."
-    t_upload = "Upload your PDF files here"
-    t_btn = "Merge & Download Now"
-    t_privacy_h = "🔒 Privacy & Security"
-    t_privacy_b = "Your privacy is our priority. Files are processed in-memory and are never stored on our servers."
+    t_desc = "The fastest and most secure tool to merge PDF files for free."
+    t_upload = "Select PDF files to merge"
+    t_btn = "Merge and Download Now"
+    t_about_h = "💡 About YouToPDF"
+    t_about_b = "YouToPDF is a simple web tool built to help users manage digital documents without complexity. We focus on speed and total data protection."
+    t_privacy_h = "🔒 Privacy Policy"
+    t_privacy_b = "We apply strict security standards; all file processing happens temporarily in RAM and is deleted immediately after download. No copies of your files are saved."
     t_terms_h = "⚖️ Terms of Service"
-    t_terms_b = "Users agree to use the tool for legal purposes only. Service is provided 'as is'."
-    t_about_h = "💡 About Us"
-    t_about_b = "YouToPDF is designed to be the fastest way to merge documents while maintaining total user privacy."
+    t_terms_b = "By using this service, you agree to use it for personal and legal purposes only. The service is free and we are not liable for user-uploaded content."
 
-# --- [القسم الأول: أداة الدمج] ---
+# --- [القسم الأول: واجهة الدمج الرئيسية] ---
 st.markdown(f"<h1 style='text-align: center;'>{t_title}</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center;'>{t_desc}</p>", unsafe_allow_html=True)
 st.write("")
@@ -67,23 +66,26 @@ if st.button(t_btn):
             output = BytesIO()
             merger.write(output)
             merger.close()
-            st.success("Success!" if language == "English" else "تم الدمج!")
+            st.success("Success!" if language == "English" else "تم الدمج بنجاح!")
             st.download_button("Download PDF", output.getvalue(), "merged_document.pdf", "application/pdf")
     else:
-        st.warning("Please upload 2+ files" if language == "English" else "يرجى رفع ملفين على الأقل")
+        st.warning("Please upload at least 2 files" if language == "English" else "يرجى رفع ملفين على الأقل")
 
-st.write("---")
+# --- [القسم الثاني: المعلومات القانونية مدمجة أسفل الصفحة الرئيسية] ---
+st.markdown("<br><hr>", unsafe_allow_html=True)
 
-# --- [القسم الثاني: شروط أدسنس والمعلومات القانونية] ---
 st.markdown(f"### {t_about_h}")
 st.write(t_about_b)
 
+# وضع الخصوصية والشروط في أعمدة لتبدو منظمة
 col1, col2 = st.columns(2)
 with col1:
     st.markdown(f"#### {t_privacy_h}")
-    st.info(t_privacy_b)
+    st.caption(t_privacy_b) # استخدام caption ليكون الخط أصغر وأكثر أناقة
+
 with col2:
     st.markdown(f"#### {t_terms_h}")
-    st.info(t_terms_b)
+    st.caption(t_terms_b)
 
-st.markdown(f"<div class='footer-note'>© 2026 YouToPDF | All Rights Reserved</div>", unsafe_allow_html=True)
+# --- [تذييل الصفحة] ---
+st.markdown(f"<div class='footer-note'>© 2026 YouToPDF | Professional PDF Solutions</div>", unsafe_allow_html=True)
