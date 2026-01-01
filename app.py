@@ -1,62 +1,37 @@
+import streamlit as st
+import streamlit.components.v1 as components
+
+# إعدادات الصفحة
+st.set_page_config(page_title="YouToPDF App", layout="wide")
+
+# نضع كود الـ HTML والـ CSS الذي صممناه سابقاً داخل متغير نصي
+html_code = """
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Clone</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* أضف كود الـ CSS هنا */
+        body { background-color: #f7f9fc; font-family: sans-serif; }
+        .header { color: #e74c3c; font-weight: bold; font-size: 24px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; width: 150px; display: inline-block; margin: 10px; }
+        .red-box { border: 2px solid #e74c3c; border-radius: 20px; padding: 20px; margin-top: 20px; }
+    </style>
 </head>
 <body>
+    <div class="header">YouToPDF</div>
+    
+    <div class="card">
+        <h3>Merge PDF</h3>
+        <p style="background:red; color:white; border-radius:4px;">Som PDF</p>
+    </div>
 
-    <nav class="github-nav">
-        <div class="nav-left">
-            <i class="fab fa-github fa-2x"></i>
-            <div class="search-container">
-                <input type="text" placeholder="البحث أو الانتقال إلى...">
-                <span class="search-slash">/</span>
-            </div>
-            <ul class="nav-links">
-                <li>Pull requests</li>
-                <li>Issues</li>
-                <li>Marketplace</li>
-                <li>Explore</li>
-            </ul>
-        </div>
-        <div class="nav-right">
-            <i class="far fa-bell"></i>
-            <i class="fas fa-plus"></i>
-            <img src="https://via.placeholder.com/20" alt="Avatar" class="avatar">
-        </div>
-    </nav>
-
-    <main class="container">
-        <div class="repo-list">
-            <div class="repo-header">
-                <h2>المستودعات الأخيرة</h2>
-                <button class="btn-new">جديد</button>
-            </div>
-            
-            <div class="repo-item">
-                <a href="#" class="repo-name">my-awesome-project</a>
-                <span class="status">Public</span>
-                <p class="repo-desc">هذا وصف لمشروع برمجي يحاكي واجهة جيت هاب.</p>
-                <div class="repo-meta">
-                    <span><i class="fas fa-circle" style="color: #f1e05a;"></i> JavaScript</span>
-                    <span><i class="far fa-star"></i> 124</span>
-                </div>
-            </div>
-
-            <div class="repo-item">
-                <a href="#" class="repo-name">portfolio-design</a>
-                <span class="status">Public</span>
-                <div class="repo-meta">
-                    <span><i class="fas fa-circle" style="color: #e34c26;"></i> HTML</span>
-                    <span><i class="far fa-star"></i> 45</span>
-                </div>
-            </div>
-        </div>
-    </main>
-
+    <div class="red-box">
+        <h3>Footer container</h3>
+        <p>About YouTDF: Professional PDF tools.</p>
+    </div>
 </body>
 </html>
+"""
+
+# عرض كود HTML داخل تطبيق Streamlit
+components.html(html_code, height=800, scrolling=True)
