@@ -3,154 +3,108 @@ from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 from io import BytesIO
 from PIL import Image
 
-# 1. إعدادات الصفحة الأساسية
-st.set_page_config(page_title="YouToPDF - منصة أدوات PDF الشاملة", page_icon="📄", layout="wide")
+# 1. إعدادات الصفحة
+st.set_page_config(page_title="YouToPDF - منصة أدوات PDF", page_icon="📄", layout="wide")
 
-# 2. تصميم الواجهة (CSS) لضمان أيقونات ضخمة وتنسيق ثابت لا يتأثر بالعمليات
+# 2. تصميم CSS (أيقونات ضخمة + إجبار ظهور الفوتر)
 st.markdown("""
     <style>
-    /* تكبير الأيقونات في العرض العلوي لجعلها بارزة جداً */
-    .big-icon-display {
-        font-size: 100px !important;
-        text-align: center;
-        margin-bottom: 10px;
+    .big-icon { font-size: 100px !important; text-align: center; margin-bottom: 10px; }
+    .service-box { 
+        text-align: center; 
+        padding: 20px; 
+        border: 2px solid #ff4b4b; 
+        border-radius: 20px; 
+        background-color: #fffafa;
     }
-    .icon-label {
-        font-size: 20px !important;
-        font-weight: bold;
-        text-align: center;
-        color: #1E1E1E;
-        margin-bottom: 30px;
+    .footer-container {
+        background-color: #f1f3f6 !important;
+        padding: 50px !important;
+        border-top: 10px solid #ff4b4b !important;
+        margin-top: 50px !important;
+        display: block !important;
+        visibility: visible !important;
+        border-radius: 20px;
     }
-    /* تنسيق الفوتر الخاص بأدسنس ليكون ثابتاً واحترافياً */
-    .adsense-footer {
-        background-color: #fcfcfc;
-        padding: 50px;
-        border-top: 6px solid #ff4b4b;
-        margin-top: 100px;
-        border-radius: 25px;
-        box-shadow: 0px -5px 15px rgba(0,0,0,0.05);
-    }
-    /* تنسيق أزرار التنفيذ */
-    .stButton > button {
-        width: 100%;
-        border-radius: 15px;
-        height: 60px;
-        font-weight: bold;
-        background-color: #ff4b4b;
-        color: white;
-        font-size: 22px;
-        transition: 0.3s;
-    }
-    .stButton > button:hover {
-        background-color: #e04343;
-        border-color: #e04343;
-    }
+    .stButton > button { width: 100%; height: 60px; font-size: 20px; font-weight: bold; border-radius: 15px; }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. نظام اختيار اللغة
-lang = st.radio("Language / اللغة", ["العربية", "English"], horizontal=True)
+# 3. اختيار اللغة
+language = st.radio("Language / اللغة", ["العربية", "English"], horizontal=True)
 
-if lang == "العربية":
-    t_title = "📄 YouToPDF - منصة أدوات PDF المتكاملة"
-    t_desc = "أدوات احترافية، سريعة، ومجانية تماماً. اختر الخدمة التي تحتاجها من المعرض أدناه:"
-    service_names = ["دمج ملفات PDF", "تحويل صور إلى PDF", "تقسيم ملف PDF", "حماية بكلمة سر", "ضغط ملف PDF"]
-    t_about = "💡 عن الموقع: منصة YouToPDF تهدف لتسهيل إدارة المستندات الرقمية دون تخزين أي بيانات خاصة لضمان أقصى درجات الخصوصية."
-    t_privacy = "🔒 سياسة الخصوصية: نحن نؤمن بالخصوصية الكاملة؛ جميع الملفات تُعالج في الذاكرة المؤقتة وتُحذف نهائياً بمجرد إغلاق المتصفح."
-    t_terms = "⚖️ شروط الاستخدام: باستخدامك لهذه الأدوات، أنت توافق على الاستخدام العادل والقانوني للمنصة."
-    t_contact = "📧 لدعم الفني والاستفسارات: support@youtopdf.com"
+if language == "العربية":
+    labels = ["دمج PDF", "صور إلى PDF", "تقسيم PDF", "حماية PDF", "ضغط PDF"]
+    t_about = "💡 عن الموقع: منصة YouToPDF هي أداة مجانية واحترافية لمعالجة ملفات PDF."
+    t_privacy = "🔒 الخصوصية: ملفاتك آمنة تماماً، تعالج في الذاكرة وتُحذف فوراً."
+    t_terms = "⚖️ الشروط: الخدمة مقدمة للاستخدام العادل والقانوني فقط."
+    t_contact = "📧 اتصل بنا: support@youtopdf.com"
 else:
-    t_title = "📄 YouToPDF - All-in-One PDF Toolbox"
-    t_desc = "Professional, fast, and 100% free tools. Choose your service from the gallery below:"
-    service_names = ["Merge PDFs", "Images to PDF", "Split PDF File", "Protect with Password", "Compress PDF File"]
-    t_about = "💡 About Us: YouToPDF provides essential document management tools with total privacy and high efficiency."
-    t_privacy = "🔒 Privacy Policy: We value your security; files are processed in-memory and deleted instantly after processing."
-    t_terms = "⚖️ Terms of Service: By using this tool, you agree to our fair and lawful use policies."
-    t_contact = "📧 Contact & Support: support@youtopdf.com"
+    labels = ["Merge PDF", "Images to PDF", "Split PDF", "Protect PDF", "Compress PDF"]
+    t_about = "💡 About Us: YouToPDF is a free professional tool for PDF management."
+    t_privacy = "🔒 Privacy: Your files are 100% secure, processed in-memory and deleted instantly."
+    t_terms = "⚖️ Terms: Service is provided for fair and lawful use only."
+    t_contact = "📧 Contact: support@youtopdf.com"
 
-# --- هيدر الموقع ---
-st.markdown(f"<h1 style='text-align: center;'>{t_title}</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center;'>{t_desc}</p>", unsafe_allow_html=True)
+# --- العرض الرئيسي ---
+st.markdown(f"<h1 style='text-align: center;'>📄 YouToPDF</h1>", unsafe_allow_html=True)
 st.write("---")
 
-# 4. معرض الخدمات (Icons Gallery) - أيقونات ضخمة جداً في صف واحد
+# 4. عرض الخدمات الـ 5 (أيقونات ضخمة)
 icons = ["🔗", "🖼️", "✂️", "🔒", "📉"]
 cols = st.columns(5)
 for i in range(5):
     with cols[i]:
-        st.markdown(f"<div class='big-icon-display'>{icons[i]}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='icon-label'>{service_names[i]}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='big-icon'>{icons[i]}</div>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align:center; font-weight:bold;'>{labels[i]}</p>", unsafe_allow_html=True)
 
-# اختيار الأداة لتفعيل منطقة العمل
-selected_tool = st.selectbox(("إبدأ العمل: اختر الأداة المطلوبة" if lang == "العربية" else "Start Working: Select Tool"), service_names)
+# اختيار الخدمة
+active_tool = st.selectbox("إختر الأداة / Select Tool", labels)
 st.write("---")
 
-# 5. منطقة العمل (Logics)
+# 5. منطق العمل
 output = BytesIO()
-ready = False
+is_ready = False
 
-if selected_tool in ["دمج ملفات PDF", "Merge PDFs"]:
-    files = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True)
-    if st.button("Execute / تنفيذ") and files:
-        merger = PdfMerger()
-        for f in files: merger.append(f)
-        merger.write(output); ready = True
+if active_tool in ["دمج PDF", "Merge PDF"]:
+    f = st.file_uploader("Upload PDFs", type="pdf", accept_multiple_files=True, key="f1")
+    if st.button("Start / ابدأ") and f:
+        m = PdfMerger()
+        for x in f: m.append(x)
+        m.write(output); is_ready = True
+elif active_tool in ["صور إلى PDF", "Images to PDF"]:
+    f = st.file_uploader("Upload Images", type=["jpg","png","jpeg"], accept_multiple_files=True, key="f2")
+    if st.button("Start / ابدأ") and f:
+        imgs = [Image.open(x).convert("RGB") for x in f]
+        imgs[0].save(output, format="PDF", save_all=True, append_images=imgs[1:]); is_ready = True
+elif active_tool in ["تقسيم PDF", "Split PDF"]:
+    f = st.file_uploader("Upload PDF", type="pdf", key="f3")
+    p = st.text_input("Pages (1-2)", "1-2")
+    if st.button("Start / ابدأ") and f:
+        r, w = PdfReader(f), PdfWriter()
+        s, e = map(int, p.split("-"))
+        for i in range(s-1, min(e, len(r.pages))): w.add_page(r.pages[i])
+        w.write(output); is_ready = True
+elif active_tool in ["حماية PDF", "Protect PDF"]:
+    f = st.file_uploader("Upload PDF", type="pdf", key="f4")
+    pwd = st.text_input("Password", type="password")
+    if st.button("Start / ابدأ") and f and pwd:
+        r, w = PdfReader(f), PdfWriter()
+        for x in r.pages: w.add_page(x)
+        w.encrypt(pwd); w.write(output); is_ready = True
+elif active_tool in ["ضغط PDF", "Compress PDF"]:
+    f = st.file_uploader("Upload PDF", type="pdf", key="f5")
+    if st.button("Start / ابدأ") and f:
+        r, w = PdfReader(f), PdfWriter()
+        for x in r.pages: x.compress_content_streams(); w.add_page(x)
+        w.write(output); is_ready = True
 
-elif selected_tool in ["تحويل صور إلى PDF", "Images to PDF"]:
-    files = st.file_uploader("Upload Images", type=["jpg","png","jpeg"], accept_multiple_files=True)
-    if st.button("Execute / تنفيذ") and files:
-        imgs = [Image.open(f).convert("RGB") for f in files]
-        imgs[0].save(output, format="PDF", save_all=True, append_images=imgs[1:]); ready = True
+if is_ready:
+    st.success("Success!")
+    st.download_button("Download", output.getvalue(), "YouToPDF_Result.pdf")
 
-elif selected_tool in ["تقسيم ملف PDF", "Split PDF File"]:
-    file = st.file_uploader("Upload PDF", type="pdf")
-    pages = st.text_input("Pages Range (e.g. 1-5)", "1-2")
-    if st.button("Execute / تنفيذ") and file:
-        reader, writer = PdfReader(file), PdfWriter()
-        start, end = map(int, pages.split("-"))
-        for i in range(start-1, min(end, len(reader.pages))): writer.add_page(reader.pages[i])
-        writer.write(output); ready = True
-
-elif selected_tool in ["حماية بكلمة سر", "Protect with Password"]:
-    file = st.file_uploader("Upload PDF", type="pdf")
-    pwd = st.text_input("Set Password", type="password")
-    if st.button("Execute / تنفيذ") and file and pwd:
-        reader, writer = PdfReader(file), PdfWriter()
-        for p in reader.pages: writer.add_page(p)
-        writer.encrypt(pwd); writer.write(output); ready = True
-
-elif selected_tool in ["ضغط ملف PDF", "Compress PDF File"]:
-    file = st.file_uploader("Upload PDF", type="pdf")
-    if st.button("Execute / تنفيذ") and file:
-        reader, writer = PdfWriter(), PdfReader(file)
-        for p in writer.pages: p.compress_content_streams(); writer.add_page(p)
-        writer.write(output); ready = True
-
-if ready:
-    st.success("✅ Process Completed Successfully!")
-    st.download_button("📥 Download Your File / تحميل ملفك الآن", output.getvalue(), "YouToPDF_Result.pdf")
-
-# 6. فوتر أدسنس الثابت والشروط (AdSense Safety Section)
-# تم وضع هذا القسم في نهاية الكود لضمان ظهوره تحت أي نتيجة عمل
+# 6. شروط أدسنس (إجبار الظهور بـ HTML ثابت)
 st.markdown(f"""
-    <div class='adsense-footer'>
-        <h2 style='text-align: center; color: #ff4b4b;'>{t_about[:15]}</h2>
-        <p style='text-align: center; font-size: 18px;'>{t_about}</p>
-        <hr style='border: 0.5px solid #eee;'>
-        <div style='display: flex; justify-content: space-around; flex-wrap: wrap;'>
-            <div style='flex: 1; min-width: 300px; padding: 20px;'>
-                <h4 style='color: #ff4b4b;'>Privacy & Safety</h4>
-                <p>{t_privacy}</p>
-            </div>
-            <div style='flex: 1; min-width: 300px; padding: 20px;'>
-                <h4 style='color: #ff4b4b;'>Terms of Use</h4>
-                <p>{t_terms}</p>
-            </div>
-        </div>
-        <div style='text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 30px;'>
-            <p style='font-size: 20px; color: #333;'><b>{t_contact}</b></p>
-            <p style='color: #aaa; font-size: 14px;'>© 2026 YouToPDF - The Secure Way to Manage Your Documents</p>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
+    <div class="footer-container">
+        <h2 style="text-align: center; color: #ff4b4b;">Google AdSense Requirements / شروط الموقع</h2>
+        <p style="text-align: center;
