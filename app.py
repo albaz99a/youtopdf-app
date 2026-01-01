@@ -1,167 +1,62 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f9fc;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-header {
-    max-width: 900px;
-    margin: 0 auto;
-}
+    <nav class="github-nav">
+        <div class="nav-left">
+            <i class="fab fa-github fa-2x"></i>
+            <div class="search-container">
+                <input type="text" placeholder="البحث أو الانتقال إلى...">
+                <span class="search-slash">/</span>
+            </div>
+            <ul class="nav-links">
+                <li>Pull requests</li>
+                <li>Issues</li>
+                <li>Marketplace</li>
+                <li>Explore</li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <i class="far fa-bell"></i>
+            <i class="fas fa-plus"></i>
+            <img src="https://via.placeholder.com/20" alt="Avatar" class="avatar">
+        </div>
+    </nav>
 
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    <main class="container">
+        <div class="repo-list">
+            <div class="repo-header">
+                <h2>المستودعات الأخيرة</h2>
+                <button class="btn-new">جديد</button>
+            </div>
+            
+            <div class="repo-item">
+                <a href="#" class="repo-name">my-awesome-project</a>
+                <span class="status">Public</span>
+                <p class="repo-desc">هذا وصف لمشروع برمجي يحاكي واجهة جيت هاب.</p>
+                <div class="repo-meta">
+                    <span><i class="fas fa-circle" style="color: #f1e05a;"></i> JavaScript</span>
+                    <span><i class="far fa-star"></i> 124</span>
+                </div>
+            </div>
 
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #444;
-}
+            <div class="repo-item">
+                <a href="#" class="repo-name">portfolio-design</a>
+                <span class="status">Public</span>
+                <div class="repo-meta">
+                    <span><i class="fas fa-circle" style="color: #e34c26;"></i> HTML</span>
+                    <span><i class="far fa-star"></i> 45</span>
+                </div>
+            </div>
+        </div>
+    </main>
 
-.lang-btn {
-    border: 1px solid #ddd;
-    background: white;
-    padding: 5px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.active-lang {
-    background: #fdeaea;
-    color: #e74c3c;
-    border-color: #fdeaea;
-}
-
-.sub-header {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-}
-
-.style-tag {
-    background: #e1ecf4;
-    color: #39739d;
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.intro-text {
-    font-size: 14px;
-    color: #555;
-    margin-top: 15px;
-}
-
-.grid-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    text-align: center;
-    width: 140px;
-}
-
-.card h3 {
-    font-size: 14px;
-    margin: 15px 0;
-}
-
-.badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 4px;
-    color: white;
-    font-size: 12px;
-}
-
-.red { background-color: #e74c3c; }
-.orange { background-color: #e67e22; }
-.dark-red { background-color: #c0392b; }
-
-.dots {
-    text-align: center;
-    font-size: 24px;
-    color: #ccc;
-    margin: 20px 0;
-}
-
-.active-section {
-    background: white;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.form-group, .form-group-btn {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-}
-
-.form-group label, .form-group-btn label {
-    width: 100px;
-    font-size: 14px;
-}
-
-.form-group input {
-    border: none;
-    background: #f1f3f4;
-    padding: 8px;
-    width: 100%;
-    border-radius: 4px;
-}
-
-.download-btn {
-    background: #f1f3f4;
-    border: 1px solid #ccc;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.footer-container {
-    border: 2px solid #e74c3c;
-    border-radius: 20px;
-    margin: 30px auto;
-    max-width: 800px;
-    padding: 20px;
-}
-
-.footer-container ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-container li {
-    margin-bottom: 10px;
-    font-size: 14px;
-}
-
-.highlight-red {
-    color: #e74c3c;
-    font-weight: bold;
-}
-
-footer {
-    text-align: center;
-    font-size: 12px;
-    color: #888;
-    margin-top: 40px;
-}
-
+</body>
+</html>
