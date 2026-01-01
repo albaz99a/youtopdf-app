@@ -1,59 +1,82 @@
-import streamlit as st
-import streamlit.components.v1 as components
+from flask import Flask, render_template_string
 
-# إعداد الصفحة لتأخذ العرض الكامل
-st.set_page_config(layout="wide")
+app = Flask(__name__)
 
-# كود الواجهة (HTML + CSS)
-html_content = """
+# دمج تصميم HTML و CSS في متغير نصي واحد
+html_template = """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>YouToPDF - Professional Tools</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f7f9fc; margin: 0; padding: 20px; }
-        .logo { font-size: 24px; font-weight: bold; color: #444; margin-bottom: 20px; }
-        .logo span { color: #e74c3c; }
+        :root { --primary-red: #e74c3c; }
+        body { font-family: sans-serif; background-color: #f1f3f5; margin: 0; padding: 40px; }
+        .wrapper { max-width: 950px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.05); }
         
-        .grid-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; }
-        .card { background: white; padding: 20px; border-radius: 10px; text-align: center; width: 150px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .card i { font-size: 40px; color: #555; margin-bottom: 10px; }
-        .badge { background: #e74c3c; color: white; font-size: 12px; padding: 3px 10px; border-radius: 4px; }
+        header { text-align: center; margin-bottom: 30px; }
+        .logo { color: var(--primary-red); font-size: 38px; font-weight: bold; }
         
-        .main-form { background: white; padding: 30px; border-radius: 15px; max-width: 800px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .footer-box { border: 2px solid #e74c3c; border-radius: 20px; padding: 20px; max-width: 800px; margin: 20px auto; }
-        .red-text { color: #e74c3c; font-weight: bold; }
+        .tools-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin: 30px 0; }
+        .tool-card { border: 1px solid #eee; border-radius: 10px; padding: 20px; text-align: center; }
+        .tool-btn { background: var(--primary-red); color: white; border: none; padding: 6px 15px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+
+        .action-box { border: 1px solid #ddd; border-radius: 15px; padding: 30px; margin: 30px 0; }
+        .form-row { display: flex; align-items: center; margin-bottom: 15px; }
+        .form-row label { width: 120px; font-size: 14px; }
+        .form-row input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        
+        .dl-btn { background: #2ecc71; color: white; border: none; padding: 12px 30px; border-radius: 6px; display: block; margin: 20px auto 0; font-weight: bold; cursor: pointer; }
+
+        .footer-red { border: 2.5px solid var(--primary-red); border-radius: 25px; padding: 25px; margin-top: 50px; }
+        .bottom-line { text-align: center; font-size: 11px; color: #aaa; margin-top: 30px; }
     </style>
 </head>
 <body>
-    <div class="logo"><i class="far fa-file-pdf" style="color:#e74c3c"></i> YouToPDF</div>
-    
-    <div class="grid-container">
-        <div class="card"><i class="fas fa-file-import"></i><p>Merge PDF</p><span class="badge">Som PDF</span></div>
-        <div class="card"><i class="fas fa-images"></i><p>Images to PDF</p><span class="badge" style="background:#e67e22">Split 19F</span></div>
-        <div class="card"><i class="fas fa-project-diagram"></i><p>Tapsipño PDF</p><span class="badge">Slin PDF</span></div>
-        <div class="card"><i class="fas fa-lock"></i><p>Protect PDF</p><span class="badge">Stn PDF</span></div>
-        <div class="card"><i class="fas fa-stopwatch"></i><p>Compress PDF</p><span class="badge" style="background:#c0392b">Btn PDit</span></div>
+<div class="wrapper">
+    <header>
+        <div class="logo">📄 YouToPDF</div>
+        <p>"YouToPDF": Professional tools for secure PDF processing.</p>
+    </header>
+
+    <div class="tools-grid">
+        <div class="tool-card"><h3>Merge PDF</h3><button class="tool-btn">Som PDF</button></div>
+        <div class="tool-card"><h3>Images to PDF</h3><button class="tool-btn">Split 19F</button></div>
+        <div class="tool-card"><h3>Extract PDF</h3><button class="tool-btn">Slm PDF</button></div>
+        <div class="tool-card"><h3>Protect PDF</h3><button class="tool-btn">Stn PDF</button></div>
+        <div class="tool-card"><h3>Compress PDF</h3><button class="tool-btn">Btn PDlt</button></div>
     </div>
 
-    <div class="main-form">
-        <p><strong>active f "sactive</strong></p>
-        <p style="color:#666; font-size:14px;">Upload PDF: Professional platform for accept multiple fitles Tute</p>
-        <hr>
-        <p>Upload PDF: <span style="background:#eee; padding:5px; border-radius:4px;">Range (e. al. 1-2)</span></p>
-        <p>Passs word: <span style="background:#eee; padding:5px; border-radius:4px;">Range (e. 1-2)</span></p>
+    <div class="action-box">
+        <h2>🛠 active function</h2>
+        <div class="form-row">
+            <label>Upload PDF</label>
+            <input type="text" placeholder="Range (e.g. 1-2)">
+        </div>
+        <div class="form-row">
+            <label>Password</label>
+            <input type="password" placeholder="Enter password">
+        </div>
+        <button class="dl-btn">📤 Download Result</button>
     </div>
 
-    <div class="footer-box">
-        <h3>"" Footer container</h3>
-        <p><i class="fas fa-map-marker-alt"></i> <b>About</b> YouTDF: ... <span class="red-text">==s=pdff PDF"</span></p>
-        <p><i class="fas fa-lock"></i> <b>Privacy:</b> No yetn tepuilt und lawhfuil osly.</p>
-        <hr>
-        <p style="font-size:12px; color:#999;">Footer container background colurtitfor, font size 122", margm natt, moto 15"</p>
+    <div class="footer-red">
+        <p>📍 <strong>About:</strong> YouToPDF: Professional secure PDF tools.</p>
+        <p>🔒 <strong>Privacy:</strong> All files are processed locally.</p>
+        <p>✉️ <strong>Terms:</strong> support@youtopdf.com</p>
     </div>
+
+    <div class="bottom-line">© 2026 Google AdSense</div>
+</div>
 </body>
 </html>
 """
 
-# تنفيذ الكود وعرضه في التطبيق
-components.html(html_content, height=1000, scrolling=True)
+@app.route('/')
+def home():
+    # استخدام render_template_string لعرض الكود المدمج
+    return render_template_string(html_template)
+
+if __name__ == '__main__':
+    # تشغيل السيرفر
+    app.run(debug=True)
